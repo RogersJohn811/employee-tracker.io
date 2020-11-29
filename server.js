@@ -106,3 +106,33 @@ function addData() {
                     }
                 )
             })
+        } else if (answer.add === "Add Role") {
+            inquirer.prompt([
+                {
+                    name: "title",
+                    type: "input",
+                    message: "Enter Title"
+                },
+                {
+                    name: "salary",
+                    type: "number",
+                    message: "Enter Salary"
+                },
+                {
+                    name: "department_id",
+                    type: "number",
+                    message: "Enter Department"
+                },
+            ]).then(function (answer){
+                con.query(
+                    "INSERT INTO role SET ?",
+                    {
+                        title: answer.title,
+                        salary: answer.salary,
+                        department_id: answer.department_id
+                    },
+                )
+            })
+        }
+    })
+} 

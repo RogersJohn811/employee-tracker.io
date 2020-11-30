@@ -171,3 +171,27 @@ function addData() {
     alter, employee roles.
 */
 
+function updateData(){
+    inquirer.prompt([
+        {
+            name: "update",
+            type: "list",
+            message: "Select the data you want to UPDATE: ",
+            choices: [
+                "Update Employee Role"
+            ]
+        },
+    ]).then(function(answer){
+        if (answer.update === "Update Employee Role"){
+            inquirer.prompt([
+                {
+                    name: "role_id",
+                    type: "number",
+                    message: "Enter the role id: "
+                 },
+                {
+                   name: "id",
+                   type: "number",
+                   message: "Enter the employee id: "
+                }
+            ])

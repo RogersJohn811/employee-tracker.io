@@ -184,7 +184,38 @@ function viewData() {
                 "Exit"
             ]
         }
-    ])
+    ]).then(function (answer) {
+        switch (answer.view) {
+            case "View All Employees":
+                con.query("SELECT * FROM employee", function (err, result) {
+                    console.table(result);
+                    getUserInput();
+                });
+                break;
+            case "View All Roles":
+                con.query("SELECT * FROM role", function (err, result) {
+                    console.table(result);
+                    getUserInput();
+                });
+                break;
+            case "View All Departments":
+                con.query("SELECT * FROM department", function (err, result) {
+                    console.table(result);
+                    getUserInput();
+                });
+                break;
+            case "View All Employees, Roles, Departments":
+                con.query("SELECT e.id, e.first_name, e.last_name, r.title, r.salary, d.name FROM employee e INNER JOIN role r on e.role_id = r.id INNER JOIN department d on r.department_id = d.id ORDER BY d.name;", function (err, result) {
+                    console.table(result);
+                    getUserInput();
+                })
+                break;
+            case "Exit":
+                getUserInput();
+            break;
+        }
+    });
+}
 
 /*
     updateData() asks the user what database information they want to

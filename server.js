@@ -131,8 +131,43 @@ function addData() {
                         salary: answer.salary,
                         department_id: answer.department_id
                     },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("Added role, ${answer.title} at salary ${answer.salary}");
+                        getUserInput();
+                    }
                 )
-            })
+            });
         }
-    })
+        else if (answer.add === "Add Department") {
+            inquirer.prompt([
+                {
+                    name: "name",
+                    type: "input",
+                    message: "Enter Department Name: "
+                },
+            ]).then(function (answer){
+                con.query(
+                    "INSERT INTO department SET ?",
+                    {
+                        name: answer.name,
+                    },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("Added department, ${answer.name}");
+                        getUserInput();
+                    }
+                )
+            });
+        }
+        else if (answer.add === "Exit"){
+            getUserInput();
+        }
+    });
 } 
+
+/*
+    updateData() asks the user what database information they want to
+    alter, employee roles.
+*/
+

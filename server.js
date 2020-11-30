@@ -248,3 +248,20 @@ function deleteData(){
                 )
             });
         }
+        else if (answer.delete === "Delete Role"){
+            inquirer.prompt([
+                {
+                    name: "id",
+                    type: "number",
+                    message: "Enter Role ID #: "
+                },
+            ]).then(function(answer){
+                con.query("DELETE FROM role WHERE ? ",[
+                    {id: answer.id}
+                ], function(error){
+                    if (error) throw error;
+                    console.log(`Role with id ${answer.id} deleted`);
+                    getUserInput();
+                });
+            });
+        }

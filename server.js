@@ -265,3 +265,23 @@ function deleteData(){
                 });
             });
         }
+        else if (answer.delete === "Delete Department"){
+            inquirer.prompt([
+                {
+                    name: "id",
+                    type: "number",
+                    message: "Enter Department ID #: "
+                },
+            ]).then(function(answer){
+                con.query("DELETE FROM department WHERE ? ",[
+                    {id: answer.id}
+                ], function(error){
+                    if (error) throw error;
+                    console.log(`Employee with id ${answer.id} deleted`);
+                    getUserInput();
+                }
+                )
+            });
+        }
+    });
+}

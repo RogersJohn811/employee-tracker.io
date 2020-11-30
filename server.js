@@ -167,6 +167,26 @@ function addData() {
 } 
 
 /*
+    viewData() asks the user what information from the database
+    they want to view, employees, departments, roles.
+*/
+function viewData() {
+    inquirer.prompt([
+        {
+            name: "view",
+            type: "list",
+            message: "Select the data you want to VIEW: ",
+            choices: [
+                "View All Employees",
+                "View All Roles",
+                "View All Departments",
+                "View All Employees, Roles, Departments",
+                "Exit"
+            ]
+        }
+    ])
+
+/*
     updateData() asks the user what database information they want to
     alter, employee roles.
 */

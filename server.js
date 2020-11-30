@@ -3,17 +3,17 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 
 
-var connection = mysql.createConnection({
+let connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
     password: "password",
-    database: "employee_DB"
+    database: "employee_db"
 });
 
 connection.connect(function (err) {
     if (err) throw err;
-    start();
+    getUserInput();
 });
 
 console.log("Welcome to our Employee Tracker Database");
@@ -212,3 +212,39 @@ function updateData(){
         }
     });
 }
+
+/*
+    deleteData() asks the user what database information they want
+    to delete, employees, roles, departments.
+*/
+function deleteData(){
+    inquirer.prompt([
+        {
+            name: "delete",
+            type: "list",
+            message: "Select the data to DELETE: ",
+            choices: [
+                "Delete Employee",
+                "Delete Role",
+                "Delete Department"
+            ]
+        }
+    ]).then(function(answer){
+        if (answer.delete === "Delete Employee"){
+            inquirer.prompt([
+                {
+                    name: "id",
+                    type: "number",
+                    message: "Enter Employee ID #: "
+                },
+            ]).then(function(answer){
+                con.query("DELETE FROM employee WHERE ? ",[
+                    {id: answer.id}
+                ], function(error){
+                    if (error) throw error;
+                    console.log(`Employee with id ${answer.id} deleted`);
+                    getUserInput();
+                }
+                )
+            });
+        }

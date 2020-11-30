@@ -194,4 +194,21 @@ function updateData(){
                    type: "number",
                    message: "Enter the employee id: "
                 }
-            ])
+            ]).then(function(answer){
+                con.query("UPDATE employee SET role_id = ? WHERE ?;", [
+                    {
+                        role_id: answer.role_id
+                    },
+                    {
+                        id: answer.id
+                    }
+                ],
+                function(error){
+                    if (error) throw error;
+                    console.log(`Updated employee with id ${answer.id} to role ${answer.role_id}`)
+                    getUserInput();
+                });
+            });
+        }
+    });
+}

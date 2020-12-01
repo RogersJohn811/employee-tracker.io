@@ -58,7 +58,7 @@ function getUserInput() {
 }
 /*
     addData() asks the user what information they want to add to
-    the database tables, including employees, roles and departments.
+    the database tables, including employees, role and departments.
 */
 function addData() {
     inquirer.prompt([
@@ -92,7 +92,7 @@ function addData() {
                     message: "Role ID #: "
                 }
             ]).then(function (answer) {
-                con.query(
+                connection.query(
                     "INSERT INTO employee SET ?",
                     {
                         first_name: answer.first_name,
@@ -124,7 +124,7 @@ function addData() {
                     message: "Enter Department"
                 },
             ]).then(function (answer){
-                con.query(
+                connection.query(
                     "INSERT INTO role SET ?",
                     {
                         title: answer.title,
@@ -147,7 +147,7 @@ function addData() {
                     message: "Enter Department Name: "
                 },
             ]).then(function (answer){
-                con.query(
+                connection.query(
                     "INSERT INTO department SET ?",
                     {
                         name: answer.name,
@@ -168,7 +168,7 @@ function addData() {
 
 /*
     viewData() asks the user what information from the database
-    they want to view, employees, departments, roles.
+    they want to view, employees, departments, role.
 */
 function viewData() {
     inquirer.prompt([
@@ -178,34 +178,34 @@ function viewData() {
             message: "Select the data you want to VIEW: ",
             choices: [
                 "View All Employees",
-                "View All Roles",
+                "View All Role",
                 "View All Departments",
-                "View All Employees, Roles, Departments",
+                "View All Employees, role, Departments",
                 "Exit"
             ]
         }
     ]).then(function (answer) {
         switch (answer.view) {
             case "View All Employees":
-                con.query("SELECT * FROM employee", function (err, result) {
+                connection.query("SELECT * FROM employee", function (err, result) {
                     console.table(result);
                     getUserInput();
                 });
                 break;
-            case "View All Roles":
-                con.query("SELECT * FROM role", function (err, result) {
+            case "View All Role":
+                connection.query("SELECT * FROM role", function (err, result) {
                     console.table(result);
                     getUserInput();
                 });
                 break;
             case "View All Departments":
-                con.query("SELECT * FROM department", function (err, result) {
+                connection.query("SELECT * FROM department", function (err, result) {
                     console.table(result);
                     getUserInput();
                 });
                 break;
-            case "View All Employees, Roles, Departments":
-                con.query("SELECT e.id, e.first_name, e.last_name, r.title, r.salary, d.name FROM employee e INNER JOIN role r on e.role_id = r.id INNER JOIN department d on r.department_id = d.id ORDER BY d.name;", function (err, result) {
+            case "View All Employees, Role, Departments":
+                connection.query("SELECT e.id, e.first_name, e.last_name, r.title, r.salary, d.name FROM employee e INNER JOIN role r on e.roles_id = r.id INNER JOIN department d on r.department_id = d.id ORDER BY d.name;", function (err, result) {
                     console.table(result);
                     getUserInput();
                 })
@@ -219,7 +219,7 @@ function viewData() {
 
 /*
     updateData() asks the user what database information they want to
-    alter, employee roles.
+    alter, employee role.
 */
 
 function updateData(){
@@ -246,7 +246,7 @@ function updateData(){
                    message: "Enter the employee id: "
                 }
             ]).then(function(answer){
-                con.query("UPDATE employee SET role_id = ? WHERE ?;", [
+                connection.query("UPDATE employee SET role_id = ? WHERE ?;", [
                     {
                         role_id: answer.role_id
                     },
@@ -266,7 +266,7 @@ function updateData(){
 
 /*
     deleteData() asks the user what database information they want
-    to delete, employees, roles, departments.
+    to delete, employees, role, departments.
 */
 function deleteData(){
     inquirer.prompt([
@@ -289,7 +289,7 @@ function deleteData(){
                     message: "Enter Employee ID #: "
                 },
             ]).then(function(answer){
-                con.query("DELETE FROM employee WHERE ? ",[
+                connection.query("DELETE FROM employee WHERE ? ",[
                     {id: answer.id}
                 ], function(error){
                     if (error) throw error;
@@ -307,7 +307,7 @@ function deleteData(){
                     message: "Enter Role ID #: "
                 },
             ]).then(function(answer){
-                con.query("DELETE FROM role WHERE ? ",[
+                connection.query("DELETE FROM role WHERE ? ",[
                     {id: answer.id}
                 ], function(error){
                     if (error) throw error;
@@ -324,7 +324,7 @@ function deleteData(){
                     message: "Enter Department ID #: "
                 },
             ]).then(function(answer){
-                con.query("DELETE FROM department WHERE ? ",[
+                connection.query("DELETE FROM department WHERE ? ",[
                     {id: answer.id}
                 ], function(error){
                     if (error) throw error;

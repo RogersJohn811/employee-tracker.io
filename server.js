@@ -1,35 +1,38 @@
-const mysql = require("mysql");
 const inquirer = require("inquirer");
+const mysql = require("mysql");
 const cTable = require("console.table");
 
-
+// Create the mysql connection, store in variable.
 let connection = mysql.createConnection({
     host: "localhost",
+    
     port: 3306,
+    
     user: "root",
+   
     password: "password",
+   
     database: "employee_db"
 });
 
-connection.connect(function (err) {
+// Connect to the database.
+connection.connect((err) => {
     if (err) throw err;
     getUserInput();
 });
-
-console.log("Welcome to our Employee Tracker Database");
+console.log("Welcome to the Employee Tracker DataBase!\n Use the selector below to get started.");
 
 /*
     getUserInput() uses inquirer to determine if the user wants to simply
     view the database, add to the database, or delete from the database.
 */
-
 function getUserInput() {
     inquirer.prompt(
         [
             {
                 name: "startOptions",
                 type: "list",
-                message: "Select an option",
+                message: "Make a selection: ",
                 choices: [
                     "Add Data",
                     "View Data",
@@ -39,18 +42,22 @@ function getUserInput() {
                 ]
             }
         ]).then((answer) => {
-            if (answer.startOptions === "View Data"){
+            if (answer.startOptions === "View Data") {
                 viewData();
             }
+            
             else if (answer.startOptions === "Add Data") {
                 addData();
             }
+            
             else if (answer.startOptions === "Update Data") {
                 updateData();
             }
+            
             else if (answer.startOptions === "Delete Data") {
                 deleteData();
             }
+           
             else if (answer.startOptions === "Exit") {
                 process.exit(1);
             }
@@ -58,14 +65,14 @@ function getUserInput() {
 }
 /*
     addData() asks the user what information they want to add to
-    the database tables, including employees, role and departments.
+    the database tables, including employees, roles and departments.
 */
 function addData() {
     inquirer.prompt([
         {
-            name: "add",
+            name: "addOptions",
             type: "list",
-            message: "What would you like to add?",
+            message: "Select what you want to add to the database: ",
             choices: [
                 "Add Employee",
                 "Add Role",
@@ -74,18 +81,20 @@ function addData() {
             ]
         }
     ]).then(function (answer) {
-        if (answer.add === "Add Employee") {
+        if (answer.addOptions === "Add Employee") {
             inquirer.prompt([
                 {
                     name: "first_name",
                     type: "input",
-                    message: "First Name"
+                    message: "First Name: "
                 },
+
                 {
                     name: "last_name",
                     type: "input",
-                    message: "Last Name"
+                    message: "Last Name: "
                 },
+                
                 {
                     name: "role_id",
                     type: "number",
@@ -101,29 +110,31 @@ function addData() {
                     },
                     function (err) {
                         if (err) throw err;
-                        console.log("Added employee, ${answer.first_name} ${answer.last_name}");
+                        console.log(`Added employee, ${answer.first_name} ${answer.last_name}`);
                         getUserInput();
                     }
                 )
             })
-        } else if (answer.add === "Add Role") {
+        } else if (answer.addOptions === "Add Role") {
             inquirer.prompt([
                 {
                     name: "title",
                     type: "input",
-                    message: "Enter Title"
+                    message: "Enter title"
                 },
+
                 {
                     name: "salary",
-                    type: "number",
-                    message: "Enter Salary"
+                    input: "number",
+                    message: "Enter salary"
                 },
+
                 {
                     name: "department_id",
                     type: "number",
                     message: "Enter Department"
-                },
-            ]).then(function (answer){
+                }
+            ]).then(function(answer){
                 connection.query(
                     "INSERT INTO role SET ?",
                     {
@@ -133,43 +144,37 @@ function addData() {
                     },
                     function (err) {
                         if (err) throw err;
-                        console.log("Added role, ${answer.title} at salary ${answer.salary}");
+                        console.log(`Added role, ${answer.title} at salary ${answer.salary}`);
                         getUserInput();
                     }
                 )
-            });
-        }
-        else if (answer.add === "Add Department") {
+            })
+        } else if (answer.addOptions === "Add Department") {
             inquirer.prompt([
                 {
                     name: "name",
                     type: "input",
-                    message: "Enter Department Name: "
-                },
-            ]).then(function (answer){
+                    message: "Enter Department name"
+                }
+            ]).then(function(answer){
                 connection.query(
                     "INSERT INTO department SET ?",
                     {
-                        name: answer.name,
+                        name: amswer.name
                     },
                     function (err) {
                         if (err) throw err;
-                        console.log("Added department, ${answer.name}");
+                        console.log(`Added Department, ${answer.name}`);
                         getUserInput();
                     }
                 )
-            });
-        }
-        else if (answer.add === "Exit"){
+            })
+        } else if (answer.addOptions === "Exit"){
             getUserInput();
         }
     });
-} 
+}
 
-/*
-    viewData() asks the user what information from the database
-    they want to view, employees, departments, role.
-*/
 function viewData() {
     inquirer.prompt([
         {
@@ -178,9 +183,9 @@ function viewData() {
             message: "Select the data you want to VIEW: ",
             choices: [
                 "View All Employees",
-                "View All Role",
+                "View All Roles",
                 "View All Departments",
-                "View All Employees, role, Departments",
+                "View All Employees, Roles, Departments",
                 "Exit"
             ]
         }
@@ -192,7 +197,7 @@ function viewData() {
                     getUserInput();
                 });
                 break;
-            case "View All Role":
+            case "View All Roles":
                 connection.query("SELECT * FROM role", function (err, result) {
                     console.table(result);
                     getUserInput();
@@ -204,8 +209,8 @@ function viewData() {
                     getUserInput();
                 });
                 break;
-            case "View All Employees, Role, Departments":
-                connection.query("SELECT e.id, e.first_name, e.last_name, r.title, r.salary, d.name FROM employee e INNER JOIN role r on e.roles_id = r.id INNER JOIN department d on r.department_id = d.id ORDER BY d.name;", function (err, result) {
+            case "View All Employees, Roles, Departments":
+                connection.query("SELECT e.id, e.first_name, e.last_name, r.title, r.salary, d.name FROM employee e INNER JOIN role r on e.role_id = r.id INNER JOIN department d on r.department_id = d.id ORDER BY d.name;", function (err, result) {
                     console.table(result);
                     getUserInput();
                 })
@@ -216,11 +221,6 @@ function viewData() {
         }
     });
 }
-
-/*
-    updateData() asks the user what database information they want to
-    alter, employee role.
-*/
 
 function updateData(){
     inquirer.prompt([
@@ -264,10 +264,6 @@ function updateData(){
     });
 }
 
-/*
-    deleteData() asks the user what database information they want
-    to delete, employees, role, departments.
-*/
 function deleteData(){
     inquirer.prompt([
         {
